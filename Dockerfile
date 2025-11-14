@@ -1,6 +1,6 @@
 # NeuroAI - Dockerfile
-# Imagem base Python 3.13
-FROM python:3.13-slim
+# Imagem base Python 3.11 (compatível com TensorFlow)
+FROM python:3.11-slim
 
 # Metadados
 LABEL maintainer="MisterHyndra"
