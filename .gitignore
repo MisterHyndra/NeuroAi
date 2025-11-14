@@ -1,0 +1,79 @@
+# Datasets (muito pesados - não commitar)
+datasets/
+*.zip
+*.rar
+*.7z
+
+# Modelos treinados (podem ser grandes)
+models/*.h5
+models/*.keras
+models/*.pkl
+!models/.gitkeep
+!.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Resultados e logs
+results/*.png
+results/*.jpg
+results/*.jpeg
+!results/.gitkeep
+!.gitkeep
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Arquivos grandes
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+
+# Arquivos de backup
+*.bak
+*.backup
+

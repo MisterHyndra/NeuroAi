@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  neuroai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: neuroai-app
+    image: neuroai:latest
+    
+    # Volumes para persistir dados
+    volumes:
+      - ./models:/app/models
+      - ./results:/app/results
+      - ./datasets:/app/datasets
+    
+    # Variáveis de ambiente
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DISPLAY=${DISPLAY:-:0}
+    
+    # Para GUI no Linux (X11 forwarding)
+    network_mode: host
+    
+    # Recursos
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Comando alternativo (se não usar GUI)
+    # command: python train_balanced_model.py
+
+
+
