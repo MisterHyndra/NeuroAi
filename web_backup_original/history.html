@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico - NeuroAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="modal.js"></script>
+    <script src="theme.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem;">
+                🧠
+            </div>
+            <div>
+                <h1>NeuroAI Diagnostics</h1>
+                <p>Histórico de Análises</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Ativar modo escuro">🌙</button>
+            <div class="status" id="userInfo">
+                Carregando...
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="grid-template-columns: 1fr; padding: 1.5rem;">
+        <div style="background: white; border-radius: 0.75rem; padding: 2rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #4f46e5;">
+                <h2 style="color: #111827; font-size: 1.5rem; margin: 0; font-weight: 700;">📊 Histórico de Análises</h2>
+                <button onclick="window.location.href='index.html'" style="background: white; color: #4f46e5; border: 2px solid #4f46e5; padding: 0.75rem 1.5rem; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+                    ← Voltar ao Dashboard
+                </button>
+            </div>
+
+            <div id="loading" style="text-align: center; padding: 3rem; display: none;">
+                <div style="border: 3px solid #e5e7eb; border-top: 3px solid #4f46e5; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
+                <p style="color: #4f46e5; font-weight: 500;">Carregando histórico...</p>
+            </div>
+
+            <div id="historyContent"></div>
+
+            <div id="emptyState" style="text-align: center; padding: 3rem; color: #9ca3af; display: none;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                <h3 style="color: #6b7280; margin-bottom: 0.5rem; font-size: 1.1rem;">Nenhuma análise realizada ainda</h3>
+                <p>Faça sua primeira análise para ver o histórico aqui</p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .history-item {
+            background: #f9fafb;
+            border-radius: 0.625rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #4f46e5;
+            transition: all 0.2s;
+            border: 1px solid #e5e7eb;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .history-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .history-item.tumor {
+            border-left-color: #ef4444;
+        }
+
+        .history-item.normal {
+            border-left-color: #10b981;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .history-result {
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            display: inline-block;
+        }
+
+        .history-result.tumor {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+        }
+
+        .history-result.normal {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.625rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.813rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            color: #4f46e5;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+    </style>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let authToken = null;
+        let currentUser = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+            await loadHistory();
+        });
+
+        // Verifica autenticação
+        async function checkAuth() {
+            authToken = localStorage.getItem('neuroai_token');
+            const userStr = localStorage.getItem('neuroai_user');
+            
+            if (!authToken || !userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userStr);
+            updateUserInfo();
+        }
+
+        // Atualiza info do usuário
+        function updateUserInfo() {
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo && currentUser) {
+                userInfo.innerHTML = `
+                    <span style="margin-right: 15px;">👤 ${currentUser.full_name || currentUser.username}</span>
+                    <button onclick="logout()" style="background: #ff4757; padding: 0.5rem 1rem; border: none; border-radius: 5px; color: white; cursor: pointer;">
+                        Sair
+                    </button>
+                `;
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('neuroai_token');
+            localStorage.removeItem('neuroai_user');
+            window.location.href = 'login.html';
+        }
+
+        // Carrega histórico
+        async function loadHistory() {
+            const loading = document.getElementById('loading');
+            const emptyState = document.getElementById('emptyState');
+            const historyContent = document.getElementById('historyContent');
+            
+            // Limpa estado anterior
+            historyContent.innerHTML = '';
+            emptyState.style.display = 'none';
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch(`${API_URL}/history`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.history.length > 0) {
+                    renderHistory(data.history);
+                } else {
+                    historyContent.innerHTML = '';
+                    emptyState.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+                historyContent.innerHTML = '<p style="color: #ff4757; text-align: center;">❌ Erro ao carregar histórico</p>';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Renderiza histórico
+        function renderHistory(history) {
+            const container = document.getElementById('historyContent');
+            
+            // Botões de ação globais
+            let actionButtons = '<div style="margin-bottom: 2rem; display: flex; gap: 1rem;">';
+            if (history.length > 0) {
+                actionButtons += `
+                    <button onclick="showClearAllModal()" style="background: #ff4757; color: white; padding: 0.8rem 1.5rem; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                        🗑️ Limpar Tudo
+                    </button>
+                `;
+            }
+            actionButtons += '</div>';
+            
+            const itemsHtml = history.map(item => {
+                const isTumor = item.result.toLowerCase() === 'tumor';
+                const date = new Date(item.created_at);
+                
+                return `
+                    <div class="history-item ${isTumor ? 'tumor' : 'normal'}">
+                        <div class="history-header">
+                            <div>
+                                <strong style="color: #00d9ff; font-size: 1.1rem;">🖼️ ${item.image_name}</strong>
+                                <p style="color: #888; font-size: 0.85rem; margin-top: 0.3rem;">
+                                    📅 ${date.toLocaleString('pt-BR')}
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 1rem; align-items: center;">
+                                <div class="history-result ${isTumor ? 'tumor' : 'normal'}">
+                                    ${isTumor ? '⚠️ TUMOR DETECTADO' : '✅ NORMAL'}
+                                </div>
+                                <button onclick="showDeleteOneModal(${item.id})" style="background: #ff4757; color: white; padding: 0.4rem 0.8rem; border: none; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">
+                                    🗑️ Deletar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="history-stats">
+                            <div class="stat-box">
+                                <div class="stat-label">Probabilidade Normal</div>
+                                <div class="stat-value">${(item.prediction_normal * 100).toFixed(2)}%</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Probabilidade Tumor</div>
+                                <div class="stat-value">${(item.prediction_tumor * 100).toFixed(2)}%</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Confiança</div>
+                                <div class="stat-value">${(item.confidence * 100).toFixed(2)}%</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">Threshold Usado</div>
+                                <div class="stat-value">${item.threshold_used.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = actionButtons + itemsHtml;
+        }
+
+        // Modal para deletar um item
+        function showDeleteOneModal(id) {
+            showConfirmModal(
+                'Deletar este registro?',
+                'Esta ação não pode ser desfeita.',
+                () => deleteAnalysis(id),
+                {
+                    icon: '🗑️',
+                    confirmText: 'Sim, deletar',
+                    cancelText: 'Cancelar',
+                    description: 'O registro será permanentemente removido do histórico.'
+                }
+            );
+        }
+
+        // Modal para limpar tudo
+        function showClearAllModal() {
+            showConfirmModal(
+                'Limpar todos os objetos?',
+                'Esta ação não pode ser desfeita. Todos os objetos adicionados serão removidos.',
+                () => clearAllHistory(),
+                {
+                    icon: '⚠️',
+                    confirmText: 'Sim, limpar tudo',
+                    cancelText: 'Cancelar',
+                    description: 'Todo o histórico será permanentemente deletado.'
+                }
+            );
+        }
+
+        // Delete uma análise específica
+        async function deleteAnalysis(id) {
+            try {
+                const response = await fetch(`${API_URL}/history/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadHistory();
+                } else {
+                    showAlertModal('❌ Erro', 'Erro ao deletar análise');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlertModal('❌ Erro', 'Erro ao deletar');
+            }
+        }
+
+        // Deleta todo o histórico
+        async function clearAllHistory() {
+            try {
+                const response = await fetch(`${API_URL}/history/clear-all`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    loadHistory();
+                } else {
+                    showAlertModal('❌ Erro', 'Erro ao limpar histórico');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlertModal('❌ Erro', 'Erro ao limpar');
+            }
+        }
+    </script>
+</body>
+</html>
