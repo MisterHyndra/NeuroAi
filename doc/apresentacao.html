@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroAI - Apresentação do Projeto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .slider-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            color: white;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #00d4ff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            margin: 20px 0 10px 0;
+            color: #00ff88;
+        }
+
+        p, li {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li::before {
+            content: "▸ ";
+            color: #00ff88;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h4 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .highlight {
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            border: 1px solid #00d4ff;
+            font-size: 1.1rem;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Consolas', monospace;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            border-left: 4px solid #00ff88;
+            overflow-x: auto;
+        }
+
+        .diagram {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .flow-arrow {
+            color: #00d4ff;
+            font-size: 2rem;
+            margin: 0 10px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide.active .slide-content {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .warning-box {
+            background: rgba(255, 71, 87, 0.2);
+            border: 2px solid #ff4757;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .success-box {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .logo {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container">
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <div class="slide-content" style="text-align: center;">
+                <div class="logo">🧠</div>
+                <h1>NeuroAI</h1>
+                <p style="font-size: 2rem; color: #00d4ff;">Sistema de Diagnóstico Cerebral</p>
+                <p style="font-size: 1.5rem; margin-top: 30px;">Projeto Integrador - Deep Learning</p>
+                <p style="font-size: 1.2rem; color: #b3bcc8; margin-top: 20px;">  </p>
+                <div style="margin-top: 50px;">
+                    <span class="tech-badge">Python 3.13</span>
+                    <span class="tech-badge">TensorFlow</span>
+                    <span class="tech-badge">Docker</span>
+                    <span class="tech-badge">CI/CD</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: O que é o Projeto -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🎯 O que é o NeuroAI?</h2>
+                <p style="font-size: 1.5rem; margin-bottom: 30px;">
+                    Sistema inteligente de apoio ao diagnóstico médico para detecção de tumores cerebrais
+                </p>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="icon">🏥</div>
+                        <h4>Objetivo Principal</h4>
+                        <p>Auxiliar profissionais de saúde na identificação precoce de tumores cerebrais através de análise de imagens de ressonância magnética (RM)</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">🤖</div>
+                        <h4>Tecnologia</h4>
+                        <p>Utiliza Redes Neurais Convolucionais (CNN) e Deep Learning para classificação automática de imagens médicas</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Tipos de Tumores Detectados:</h3>
+                <ul>
+                    <li><span class="highlight">Glioma</span> - Tumor mais comum do cérebro</li>
+                    <li><span class="highlight">Meningioma</span> - Tumor nas membranas que cobrem o cérebro</li>
+                    <li><span class="highlight">Pituitário</span> - Tumor na glândula pituitária</li>
+                    <li><span class="highlight">Tecido Normal</span> - Ausência de tumor</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 3: Arquitetura do Sistema -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🏗️ Arquitetura do Sistema</h2>
+                
+                <div class="diagram">
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; font-size: 1.3rem;">
+                        <div class="card" style="min-width: 200px;">
+                            <div class="icon">🖼️</div>
+                            <strong>Imagens RM</strong>
+                            <p style="font-size: 1rem;">Entrada</p>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 200px;">
+                            <div class="icon">⚙️</div>
+                            <strong>Pré-processamento</strong>
+                            <p style="font-size: 1rem;">OpenCV/PIL</p>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 200px;">
+                            <div class="icon">🧠</div>
+                            <strong>Modelo CNN</strong>
+                            <p style="font-size: 1rem;">TensorFlow/Keras</p>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 200px;">
+                            <div class="icon">📊</div>
+                            <strong>Diagnóstico</strong>
+                            <p style="font-size: 1rem;">Resultado</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Características da Arquitetura:</h3>
+                <div class="grid-2">
+                    <div>
+                        <ul>
+                            <li><span class="highlight">Desktop Application</span> - Interface Tkinter</li>
+                            <li><span class="highlight">Processamento Local</span> - Sem necessidade de servidor</li>
+                            <li><span class="highlight">Modelo Standalone</span> - Arquivo .h5 local</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <ul>
+                            <li><span class="highlight">Inferência em Tempo Real</span> - Resultado imediato</li>
+                            <li><span class="highlight">Sem Backend</span> - Tudo roda localmente</li>
+                            <li><span class="highlight">Privacidade Total</span> - Dados não saem da máquina</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Modelo de Deep Learning -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🤖 Modelo de Deep Learning</h2>
+                
+                <h3>Arquitetura CNN Avançada</h3>
+                <div class="grid-3">
+                    <div class="card">
+                        <h4>Bloco 1</h4>
+                        <p>Conv2D (64)<br>BatchNorm<br>MaxPooling<br>Dropout 0.25</p>
+                    </div>
+                    <div class="card">
+                        <h4>Bloco 2</h4>
+                        <p>Conv2D (128)<br>BatchNorm<br>MaxPooling<br>Dropout 0.25</p>
+                    </div>
+                    <div class="card">
+                        <h4>Bloco 3</h4>
+                        <p>Conv2D (256)<br>BatchNorm<br>MaxPooling<br>Dropout 0.25</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+model = Sequential([<br>
+&nbsp;&nbsp;Conv2D(64, (3,3), activation='relu', padding='same'),<br>
+&nbsp;&nbsp;BatchNormalization(),<br>
+&nbsp;&nbsp;MaxPooling2D(2, 2),<br>
+&nbsp;&nbsp;Dropout(0.25),<br>
+&nbsp;&nbsp;...<br>
+&nbsp;&nbsp;Dense(512, activation='relu'),<br>
+&nbsp;&nbsp;Dense(num_classes, activation='softmax')<br>
+])
+                </div>
+
+                <h3>Técnicas Utilizadas:</h3>
+                <ul>
+                    <li><span class="highlight">Data Augmentation</span> - Rotação, zoom, flip para aumentar dataset</li>
+                    <li><span class="highlight">Batch Normalization</span> - Estabilização do treinamento</li>
+                    <li><span class="highlight">Dropout</span> - Prevenção de overfitting</li>
+                    <li><span class="highlight">Class Weights</span> - Balanceamento de classes desbalanceadas</li>
+                    <li><span class="highlight">Early Stopping</span> - Parada quando modelo não melhora</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5: Dataset e Treinamento -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📊 Dataset e Treinamento</h2>
+                
+                <h3>Origem dos Dados:</h3>
+                <div class="success-box">
+                    <p><strong>🔗 Fonte Principal: Kaggle</strong></p>
+                    <p>Dataset: Brain Tumor MRI Dataset (Kaggle)</p>
+                    <p>Contém milhares de imagens de ressonância magnética classificadas</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>📁 Estrutura do Dataset</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li>Training: ~70% dos dados</li>
+                            <li>Validation: ~15% dos dados</li>
+                            <li>Testing: ~15% dos dados</li>
+                            <li>Imagens 224x224 pixels</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>⚙️ Processo de Treinamento</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li>Épocas: 20-50 epochs</li>
+                            <li>Batch Size: 16-32</li>
+                            <li>Learning Rate: 0.001</li>
+                            <li>Optimizer: Adam</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Performance do Modelo:</h3>
+                <ul>
+                    <li><span class="highlight">Acurácia Geral:</span> ~55-60% (ajustável com threshold)</li>
+                    <li><span class="highlight">Tecido Normal:</span> ~90% de acurácia</li>
+                    <li><span class="highlight">Gliomas:</span> ~80% de acurácia</li>
+                    <li><span class="highlight">Threshold Ajustável:</span> 0.35-0.50 para otimizar detecção</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 5.1: Problema do Desbalanceamento -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>⚖️ Desafio: Dataset Desbalanceado</h2>
+                
+                <h3>Distribuição Original dos Dados:</h3>
+                <div class="grid-2" style="margin-top: 30px;">
+                    <div class="card" style="background: rgba(0, 212, 255, 0.2); border: 2px solid #00d4ff;">
+                        <h4>Classes Majoritárias</h4>
+                        <ul style="font-size: 1.2rem;">
+                            <li><span class="highlight">Glioma:</span> 826 imagens (29%)</li>
+                            <li><span class="highlight">Meningioma:</span> 822 imagens (29%)</li>
+                            <li><span class="highlight">Pituitário:</span> 827 imagens (29%)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card" style="background: rgba(255, 71, 87, 0.2); border: 2px solid #ff4757;">
+                        <h4>Classe Minoritária</h4>
+                        <ul style="font-size: 1.2rem;">
+                            <li><span class="highlight">No Tumor:</span> 395 imagens (13%)</li>
+                            <li style="color: #ff4757;">⚠️ Apenas METADE das outras!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Por que isso é um problema?</h3>
+                <div class="warning-box">
+                    <ul style="font-size: 1.2rem;">
+                        <li><strong>Viés do Modelo:</strong> Aprende mais sobre classes com mais exemplos</li>
+                        <li><strong>Chute Estatístico:</strong> Tende a sempre prever Glioma (classe maior)</li>
+                        <li><strong>Ignora Minoritária:</strong> Não aprende bem a classe "No Tumor"</li>
+                        <li><strong>Baixa Recall:</strong> Perde muitos casos importantes da classe menor</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 30px;">Impacto Clínico:</h3>
+                <div class="card" style="background: rgba(255, 71, 87, 0.15); border: 2px solid #ff4757;">
+                    <p style="font-size: 1.3rem;">
+                        <strong>Problema Crítico:</strong> "No Tumor" é clinicamente importante! 
+                        Falhar em detectar que NÃO há tumor pode gerar tratamentos desnecessários 
+                        ou ansiedade no paciente.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5.2: Técnicas de Balanceamento -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🔧 Solução: Balanceamento da IA</h2>
+                
+                <h3>Técnica 1: Class Weights (Pesos de Classes)</h3>
+                <div class="code-block">
+from sklearn.utils.class_weight import compute_class_weight<br>
+<br>
+class_weights = compute_class_weight('balanced', <br>
+&nbsp;&nbsp;&nbsp;&nbsp;classes=np.unique(y_train), y=y_train)<br>
+<br>
+# Resultado: {0: 0.8, 1: 0.8, 2: 0.8, 3: 1.6}<br>
+#         Glioma↑ Menin↑ Pitui↑ NoTumor↑ (peso DOBRADO!)
+                </div>
+
+                <div class="success-box">
+                    <p><strong>Como funciona:</strong></p>
+                    <p>Classes com <strong>menos exemplos</strong> recebem <strong>mais peso</strong> na loss function. 
+                    Erros em "No Tumor" pesam MAIS, forçando o modelo a aprender melhor essa classe.</p>
+                </div>
+
+                <h3 style="margin-top: 30px;">Técnica 2: Data Augmentation (Aumento de Dados)</h3>
+                <div class="grid-2">
+                    <div class="code-block" style="font-size: 0.95rem;">
+from keras.preprocessing.image import ImageDataGenerator<br>
+<br>
+datagen = ImageDataGenerator(<br>
+&nbsp;&nbsp;rotation_range=20,<br>
+&nbsp;&nbsp;width_shift_range=0.2,<br>
+&nbsp;&nbsp;height_shift_range=0.2,<br>
+&nbsp;&nbsp;horizontal_flip=True,<br>
+&nbsp;&nbsp;zoom_range=0.2<br>
+)
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Resultado:</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li>1 imagem → 10+ variações</li>
+                            <li>395 imagens → ~4000 variações!</li>
+                            <li>Rotação, zoom, espelhamento</li>
+                            <li>Modelo generaliza melhor</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">Analogia:</h3>
+                <div class="card" style="background: rgba(0, 255, 136, 0.15);">
+                    <p style="font-size: 1.2rem;">
+                        <strong>Class Weights:</strong> "Dar nota dobrada na matéria difícil - estudante foca mais nela"<br>
+                        <strong>Data Augmentation:</strong> "Estudar mesmo livro de ângulos diferentes - aprende melhor"
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5.3: Prevenção de Overfitting -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🛡️ Prevenção de Overfitting</h2>
+                
+                <h3>O que é Overfitting?</h3>
+                <div class="warning-box">
+                    <p style="font-size: 1.3rem;">
+                        <strong>Problema:</strong> Modelo <strong>decora</strong> o conjunto de treino mas <strong>erra</strong> no teste.<br>
+                        É como estudante que decora respostas específicas mas não entende o conceito.
+                    </p>
+                </div>
+
+                <div class="grid-2" style="margin-top: 30px;">
+                    <div class="card" style="border: 2px solid #ff4757;">
+                        <h4 style="color: #ff4757;">❌ Sem Regularização</h4>
+                        <p style="font-size: 1.1rem;">
+                            Treino: 98% ✅<br>
+                            Validação: 45% ❌<br>
+                            <strong>→ Decorou!</strong>
+                        </p>
+                    </div>
+                    
+                    <div class="card" style="border: 2px solid #00ff88;">
+                        <h4 style="color: #00ff88;">✅ Com Regularização</h4>
+                        <p style="font-size: 1.1rem;">
+                            Treino: 65% ✅<br>
+                            Validação: 60% ✅<br>
+                            <strong>→ Generalizou!</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Técnicas Anti-Overfitting:</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>1. Dropout (Desligar Neurônios)</h4>
+                        <div class="code-block" style="font-size: 0.9rem;">
+Dropout(0.25)  # Desliga 25% aleatórios
+                        </div>
+                        <p style="font-size: 1rem;">Força modelo a não depender de um caminho específico</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>2. Batch Normalization</h4>
+                        <div class="code-block" style="font-size: 0.9rem;">
+BatchNormalization()
+                        </div>
+                        <p style="font-size: 1rem;">Normaliza valores, estabiliza treinamento</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>3. Early Stopping</h4>
+                        <div class="code-block" style="font-size: 0.9rem;">
+EarlyStopping(patience=5)
+                        </div>
+                        <p style="font-size: 1rem;">Para se validação não melhorar por 5 épocas</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>4. Data Augmentation</h4>
+                        <div class="code-block" style="font-size: 0.9rem;">
+rotation, zoom, flip
+                        </div>
+                        <p style="font-size: 1rem;">Varia imagens, aprende padrões gerais</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Divisão Estratégica dos Dados:</h3>
+                <div class="diagram">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <div class="card" style="min-width: 200px; border: 2px solid #00d4ff;">
+                            <h4>70% Treino</h4>
+                            <p>Ajusta pesos da rede</p>
+                        </div>
+                        <div class="card" style="min-width: 200px; border: 2px solid #ffa726;">
+                            <h4>15% Validação</h4>
+                            <p>Monitora overfitting<br>DURANTE treino</p>
+                        </div>
+                        <div class="card" style="min-width: 200px; border: 2px solid #00ff88;">
+                            <h4>15% Teste</h4>
+                            <p>Avalia performance final<br>NUNCA visto antes!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5.4: Processo de Treinamento -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🔄 Processo de Treinamento Completo</h2>
+                
+                <h3>O que acontece em cada época:</h3>
+                <div class="diagram">
+                    <div style="text-align: left; max-width: 1000px; margin: 0 auto;">
+                        <div class="card" style="margin: 10px 0; background: rgba(0, 212, 255, 0.1);">
+                            <strong style="color: #00d4ff;">ÉPOCA 1/20:</strong>
+                            <ul style="font-size: 1rem; margin-top: 10px;">
+                                <li>Pega batch de 16 imagens</li>
+                                <li>Passa pela CNN → Predição</li>
+                                <li>Calcula erro aplicando class_weights</li>
+                                <li>Backpropagation: ajusta pesos</li>
+                                <li>Valida no conjunto de validação</li>
+                            </ul>
+                            <p style="margin-top: 10px;"><strong>Acurácia:</strong> Treino 45% | Validação 42%</p>
+                        </div>
+
+                        <div class="card" style="margin: 10px 0; background: rgba(255, 167, 38, 0.1);">
+                            <strong style="color: #ffa726;">ÉPOCA 10/20:</strong>
+                            <p style="margin-top: 10px;"><strong>Acurácia:</strong> Treino 68% ✅ | Validação 61% ✅</p>
+                            <p style="color: #00ff88;">→ Melhor modelo até agora! (salvo automaticamente)</p>
+                        </div>
+
+                        <div class="card" style="margin: 10px 0; background: rgba(255, 71, 87, 0.1);">
+                            <strong style="color: #ff4757;">ÉPOCA 15/20:</strong>
+                            <p style="margin-top: 10px;"><strong>Acurácia:</strong> Treino 92% | Validação 58% ⚠️</p>
+                            <p style="color: #ff4757;">→ EarlyStopping ativado! Validação parou de melhorar</p>
+                            <p style="color: #00ff88;">→ Restaura pesos da época 10 (melhor)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Configuração de Treinamento:</h3>
+                <div class="grid-2">
+                    <div class="code-block" style="text-align: left; font-size: 0.95rem;">
+model.compile(<br>
+&nbsp;&nbsp;optimizer=Adam(lr=0.001),<br>
+&nbsp;&nbsp;loss='categorical_crossentropy',<br>
+&nbsp;&nbsp;metrics=['accuracy']<br>
+)<br>
+<br>
+callbacks = [<br>
+&nbsp;&nbsp;EarlyStopping(patience=5),<br>
+&nbsp;&nbsp;ReduceLROnPlateau(factor=0.5),<br>
+&nbsp;&nbsp;ModelCheckpoint('best.h5')<br>
+]
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Callbacks:</h4>
+                        <ul style="font-size: 1rem;">
+                            <li><strong>EarlyStopping:</strong> Para treino se não melhorar</li>
+                            <li><strong>ReduceLR:</strong> Reduz learning rate se estagnado</li>
+                            <li><strong>ModelCheckpoint:</strong> Salva melhor modelo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Métricas de Avaliação:</h3>
+                <div class="grid-3">
+                    <div class="card">
+                        <h4>Acurácia</h4>
+                        <p style="font-size: 1rem;">% de acertos gerais</p>
+                    </div>
+                    <div class="card">
+                        <h4>Precision</h4>
+                        <p style="font-size: 1rem;">Quando diz "é tumor", quantas vezes acerta?</p>
+                    </div>
+                    <div class="card">
+                        <h4>Recall</h4>
+                        <p style="font-size: 1rem;">De todos tumores reais, quantos detectou?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Tecnologias Utilizadas -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🛠️ Stack Tecnológico</h2>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🐍 Linguagem e Framework</h4>
+                        <div class="tech-badge">Python 3.13</div>
+                        <div class="tech-badge">TensorFlow 2.15+</div>
+                        <div class="tech-badge">Keras</div>
+                        <p style="margin-top: 15px;">Framework principal para Deep Learning e desenvolvimento do sistema</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🖼️ Processamento de Imagens</h4>
+                        <div class="tech-badge">OpenCV</div>
+                        <div class="tech-badge">PIL/Pillow</div>
+                        <div class="tech-badge">NumPy</div>
+                        <p style="margin-top: 15px;">Manipulação, pré-processamento e augmentation de imagens</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🖥️ Interface Gráfica</h4>
+                        <div class="tech-badge">Tkinter</div>
+                        <div class="tech-badge">Matplotlib</div>
+                        <p style="margin-top: 15px;">Interface desktop moderna com visualizações em tempo real</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>📊 Análise e Visualização</h4>
+                        <div class="tech-badge">Pandas</div>
+                        <div class="tech-badge">Seaborn</div>
+                        <div class="tech-badge">scikit-learn</div>
+                        <p style="margin-top: 15px;">Métricas, análise de performance e visualizações</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 20px;">Bibliotecas Principais:</h3>
+                <div class="code-block">
+tensorflow>=2.15.0<br>
+opencv-python>=4.8.0<br>
+matplotlib>=3.8.0<br>
+numpy>=1.24.0<br>
+pandas>=2.1.0<br>
+scikit-learn>=1.3.0
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Docker -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🐳 Containerização com Docker</h2>
+                
+                <h3>Por que Docker?</h3>
+                <ul>
+                    <li><span class="highlight">Portabilidade</span> - Funciona em qualquer ambiente</li>
+                    <li><span class="highlight">Isolamento</span> - Dependências encapsuladas</li>
+                    <li><span class="highlight">Reprodutibilidade</span> - Ambiente consistente</li>
+                    <li><span class="highlight">Deploy Simplificado</span> - Uma imagem, múltiplos ambientes</li>
+                </ul>
+
+                <h3>Estrutura Docker:</h3>
+                <div class="grid-2">
+                    <div>
+                        <h4>📄 Dockerfile</h4>
+                        <div class="code-block" style="font-size: 1rem;">
+FROM python:3.11-slim<br>
+WORKDIR /app<br>
+COPY requirements.txt .<br>
+RUN pip install -r requirements.txt<br>
+COPY . .<br>
+CMD ["python", "visual_diagnosis_modern.py"]
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4>🔧 docker-compose.yml</h4>
+                        <div class="code-block" style="font-size: 1rem;">
+services:<br>
+&nbsp;&nbsp;neuroai:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;build: .<br>
+&nbsp;&nbsp;&nbsp;&nbsp;volumes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ./models:/app/models<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ./datasets:/app/datasets<br>
+&nbsp;&nbsp;&nbsp;&nbsp;resources:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory: 4G<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cpus: '2'
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Como Usar:</h3>
+                <div class="code-block">
+# Build da imagem<br>
+docker build -t neuroai .<br>
+<br>
+# Executar com compose<br>
+docker-compose up
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: CI/CD -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🚀 CI/CD com GitHub Actions</h2>
+                
+                <h3>Pipeline Automatizado:</h3>
+                <div class="diagram">
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap;">
+                        <div class="card" style="min-width: 150px;">
+                            <div class="icon">📝</div>
+                            <strong>Push Code</strong>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 150px;">
+                            <div class="icon">✅</div>
+                            <strong>Run Tests</strong>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 150px;">
+                            <div class="icon">🐳</div>
+                            <strong>Build Docker</strong>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 150px;">
+                            <div class="icon">🎉</div>
+                            <strong>Deploy</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🧪 Job: Test</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li>Checkout do código</li>
+                            <li>Setup Python 3.13</li>
+                            <li>Instalar dependências</li>
+                            <li>Validar sintaxe</li>
+                            <li>Testar importações</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🐳 Job: Docker Build</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li>Build da imagem</li>
+                            <li>Verificar integridade</li>
+                            <li>Testar container</li>
+                            <li>Push para registry</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Benefícios:</h3>
+                <ul>
+                    <li><span class="highlight">Automação Completa</span> - Sem intervenção manual</li>
+                    <li><span class="highlight">Qualidade Garantida</span> - Testes em cada commit</li>
+                    <li><span class="highlight">Deploy Rápido</span> - Pipeline em minutos</li>
+                    <li><span class="highlight">Rastreabilidade</span> - Histórico de builds</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 9: Estrutura do Projeto -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📁 Estrutura do Projeto</h2>
+                
+                <div class="grid-2">
+                    <div class="code-block" style="text-align: left;">
+Rede Neural/<br>
+├── 📂 src/<br>
+│&nbsp;&nbsp;&nbsp;├── train_model.py<br>
+│&nbsp;&nbsp;&nbsp;├── model_architecture.py<br>
+│&nbsp;&nbsp;&nbsp;├── preprocessing.py<br>
+│&nbsp;&nbsp;&nbsp;├── predict.py<br>
+│&nbsp;&nbsp;&nbsp;└── evaluate_model.py<br>
+├── 📂 models/<br>
+│&nbsp;&nbsp;&nbsp;└── brain_cancer_*.h5<br>
+├── 📂 datasets/<br>
+│&nbsp;&nbsp;&nbsp;└── brain_cancer/<br>
+├── 📂 results/<br>
+├── 📂 notebooks/<br>
+└── 📂 doc/
+                    </div>
+                    
+                    <div>
+                        <div class="card">
+                            <h4>🔑 Arquivos Principais</h4>
+                            <ul style="font-size: 1rem;">
+                                <li><strong>visual_diagnosis_modern.py</strong> - Interface principal</li>
+                                <li><strong>train_balanced_model.py</strong> - Treinamento</li>
+                                <li><strong>Dockerfile</strong> - Containerização</li>
+                                <li><strong>docker-compose.yml</strong> - Orquestração</li>
+                                <li><strong>requirements.txt</strong> - Dependências</li>
+                                <li><strong>.github/workflows/ci.yml</strong> - CI/CD</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Organização dos Módulos:</h3>
+                <ul>
+                    <li><span class="highlight">src/</span> - Código fonte modular e reutilizável</li>
+                    <li><span class="highlight">models/</span> - Modelos treinados (.h5) não versionados</li>
+                    <li><span class="highlight">datasets/</span> - Dados de treinamento locais</li>
+                    <li><span class="highlight">results/</span> - Gráficos e relatórios de performance</li>
+                    <li><span class="highlight">doc/</span> - Documentação e apresentações</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 10: Como Funciona -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>⚙️ Como o Sistema Funciona</h2>
+                
+                <h3>Fluxo de Diagnóstico:</h3>
+                <div class="diagram">
+                    <div style="text-align: left; max-width: 900px; margin: 0 auto;">
+                        <div class="card" style="margin: 10px 0;">
+                            <strong>1️⃣ Upload da Imagem</strong>
+                            <p>Usuário carrega imagem RM através da interface Tkinter</p>
+                        </div>
+                        <span class="flow-arrow" style="display: block; text-align: center;">↓</span>
+                        
+                        <div class="card" style="margin: 10px 0;">
+                            <strong>2️⃣ Pré-processamento</strong>
+                            <p>Redimensionamento (224x224), normalização (0-1), conversão de formato</p>
+                        </div>
+                        <span class="flow-arrow" style="display: block; text-align: center;">↓</span>
+                        
+                        <div class="card" style="margin: 10px 0;">
+                            <strong>3️⃣ Inferência do Modelo</strong>
+                            <p>CNN processa imagem e gera probabilidades para cada classe</p>
+                        </div>
+                        <span class="flow-arrow" style="display: block; text-align: center;">↓</span>
+                        
+                        <div class="card" style="margin: 10px 0;">
+                            <strong>4️⃣ Pós-processamento</strong>
+                            <p>Aplicação de threshold ajustável para classificação final</p>
+                        </div>
+                        <span class="flow-arrow" style="display: block; text-align: center;">↓</span>
+                        
+                        <div class="card" style="margin: 10px 0;">
+                            <strong>5️⃣ Visualização</strong>
+                            <p>Resultado exibido com gráficos, probabilidades e mapas de atenção</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Interface do Usuário -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🖥️ Interface do Usuário</h2>
+                
+                <h3>Design Moderno e Profissional:</h3>
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="icon">🎨</div>
+                        <h4>Tema Escuro</h4>
+                        <p>Interface elegante com cores médicas profissionais</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">📊</div>
+                        <h4>Visualizações</h4>
+                        <p>Gráficos em tempo real com Matplotlib integrado</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">⚡</div>
+                        <h4>Tempo Real</h4>
+                        <p>Diagnóstico instantâneo ao carregar imagem</p>
+                    </div>
+                </div>
+
+                <h3>Funcionalidades Principais:</h3>
+                <ul>
+                    <li><span class="highlight">Carregamento de Imagens</span> - Suporta PNG, JPG, JPEG, BMP</li>
+                    <li><span class="highlight">Threshold Ajustável</span> - Controle deslizante 0.0 - 1.0</li>
+                    <li><span class="highlight">Visualização Múltipla</span> - Imagem original, processada, resultados</li>
+                    <li><span class="highlight">Gráficos de Probabilidade</span> - Barra e pizza com percentuais</li>
+                    <li><span class="highlight">Indicadores Visuais</span> - Cores e ícones para facilitar interpretação</li>
+                    <li><span class="highlight">Histórico</span> - Painel com análises anteriores</li>
+                </ul>
+
+                <div class="success-box">
+                    <p><strong>✨ Interface Responsiva e Intuitiva</strong></p>
+                    <p>Projetada para ser usada por profissionais de saúde sem conhecimento técnico</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Desafios e Soluções -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>💡 Desafios e Soluções</h2>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>❌ Desafio</h4>
+                        <p><strong>Dataset Desbalanceado</strong></p>
+                        <p>Algumas classes tinham muito mais exemplos que outras</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Solução</h4>
+                        <p><strong>Class Weights + Data Augmentation</strong></p>
+                        <p>Pesos balanceados e aumento artificial de dados</p>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h4>❌ Desafio</h4>
+                        <p><strong>Overfitting</strong></p>
+                        <p>Modelo memorizava treino mas errava teste</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Solução</h4>
+                        <p><strong>Dropout + BatchNorm + EarlyStopping</strong></p>
+                        <p>Regularização e parada antecipada</p>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h4>❌ Desafio</h4>
+                        <p><strong>Performance em Tempo Real</strong></p>
+                        <p>Modelo pesado demorava para inferência</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Solução</h4>
+                        <p><strong>Otimização de Arquitetura</strong></p>
+                        <p>Balanceamento entre tamanho e acurácia</p>
+                    </div>
+                </div>
+
+                <div class="grid-2" style="margin-top: 20px;">
+                    <div class="card">
+                        <h4>❌ Desafio</h4>
+                        <p><strong>Compatibilidade de Ambiente</strong></p>
+                        <p>Dependências complexas e conflitos</p>
+                    </div>
+                    <div class="card">
+                        <h4>✅ Solução</h4>
+                        <p><strong>Docker + Requirements Fixados</strong></p>
+                        <p>Ambiente containerizado reproduzível</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13: Resultados e Métricas -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>📈 Resultados e Métricas</h2>
+                
+                <h3>Performance do Modelo:</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <h4>🎯 Acurácia por Classe</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li><span class="highlight">Tecido Normal:</span> ~90%</li>
+                            <li><span class="highlight">Glioma:</span> ~80%</li>
+                            <li><span class="highlight">Meningioma:</span> ~45%</li>
+                            <li><span class="highlight">Pituitário:</span> ~40%</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>📊 Métricas Gerais</h4>
+                        <ul style="font-size: 1.1rem;">
+                            <li><span class="highlight">Acurácia Geral:</span> 55-60%</li>
+                            <li><span class="highlight">Precisão:</span> ~58%</li>
+                            <li><span class="highlight">Recall:</span> ~55%</li>
+                            <li><span class="highlight">F1-Score:</span> ~56%</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Otimizações:</h3>
+                <ul>
+                    <li><span class="highlight">Threshold Ajustável:</span> Permite balancear sensibilidade vs especificidade</li>
+                    <li><span class="highlight">Ensemble Ready:</span> Preparado para combinar múltiplos modelos</li>
+                    <li><span class="highlight">Continuous Improvement:</span> Pipeline permite retreinamento fácil</li>
+                </ul>
+
+                <div class="warning-box">
+                    <p><strong>⚠️ AVISO MÉDICO IMPORTANTE</strong></p>
+                    <p>Este sistema é uma <strong>ferramenta de apoio</strong> ao diagnóstico médico e <strong>NÃO substitui</strong> a avaliação de profissionais qualificados. Resultados devem sempre ser validados por médicos especialistas.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14: Versionamento e Colaboração -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🔄 Versionamento e Colaboração</h2>
+                
+                <h3>Controle de Versão com Git:</h3>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="icon">📦</div>
+                        <h4>Repositório GitHub</h4>
+                        <p><strong>github.com/MisterHyndra/NeuroAi</strong></p>
+                        <p>Código aberto e versionado</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">🌿</div>
+                        <h4>Branches</h4>
+                        <p><strong>main</strong> - Código estável</p>
+                        <p><strong>develop</strong> - Desenvolvimento</p>
+                        <p><strong>feature/*</strong> - Novas funcionalidades</p>
+                    </div>
+                </div>
+
+                <h3>Boas Práticas Adotadas:</h3>
+                <ul>
+                    <li><span class="highlight">.gitignore</span> - Arquivos pesados (modelos, datasets) não versionados</li>
+                    <li><span class="highlight">Commits Semânticos</span> - Mensagens claras e descritivas</li>
+                    <li><span class="highlight">README Completo</span> - Documentação detalhada do projeto</li>
+                    <li><span class="highlight">Licença MIT</span> - Código aberto para comunidade</li>
+                </ul>
+
+                <h3>Arquivos Importantes:</h3>
+                <div class="code-block">
+README.md - Documentação principal<br>
+LICENSE - Licença do projeto<br>
+.gitignore - Arquivos a ignorar<br>
+GITHUB_ACTIONS_GUIDE.md - Guia CI/CD<br>
+requirements.txt - Dependências Python
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15: Futuras Melhorias -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🚀 Roadmap e Melhorias Futuras</h2>
+                
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="icon">🌐</div>
+                        <h4>Versão Web</h4>
+                        <p>Interface web com Flask/FastAPI para acesso remoto via navegador</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">📱</div>
+                        <h4>App Mobile</h4>
+                        <p>Aplicativo iOS/Android para diagnóstico móvel</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">🧠</div>
+                        <h4>Transfer Learning</h4>
+                        <p>Implementar VGG16, ResNet50, EfficientNet para melhor performance</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">📊</div>
+                        <h4>Dashboard Analytics</h4>
+                        <p>Painel com estatísticas e histórico de diagnósticos</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">🔐</div>
+                        <h4>Sistema de Usuários</h4>
+                        <p>Login, perfis de médicos, histórico de pacientes</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">🗄️</div>
+                        <h4>Banco de Dados</h4>
+                        <p>PostgreSQL/MongoDB para armazenar diagnósticos</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Melhorias Técnicas:</h3>
+                <ul>
+                    <li><span class="highlight">Ensemble Models</span> - Combinar múltiplos modelos</li>
+                    <li><span class="highlight">GPU Acceleration</span> - Otimização para CUDA</li>
+                    <li><span class="highlight">API REST</span> - Endpoints para integração</li>
+                    <li><span class="highlight">Unit Tests</span> - Cobertura de testes completa</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 16: Por que não precisa de Backend -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>🔧 Por que NÃO Precisamos de Back-end?</h2>
+                
+                <h3>Arquitetura Desktop Standalone:</h3>
+                <div class="success-box">
+                    <p><strong>✨ Python faz TUDO localmente!</strong></p>
+                    <p>Nosso sistema é uma aplicação desktop completa, não uma aplicação web cliente-servidor</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="icon">🖥️</div>
+                        <h4>Front-end Local</h4>
+                        <p><strong>Tkinter (GUI Nativa)</strong></p>
+                        <p>Interface gráfica roda diretamente no Python, sem navegador ou servidor web</p>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="icon">🧠</div>
+                        <h4>Processamento Local</h4>
+                        <p><strong>TensorFlow/Keras</strong></p>
+                        <p>Modelo carregado em memória (.h5) e inferência executada localmente</p>
+                    </div>
+                </div>
+
+                <h3>Fluxo Completo SEM Backend:</h3>
+                <div class="diagram">
+                    <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap;">
+                        <div class="card" style="min-width: 180px;">
+                            <strong>Tkinter GUI</strong>
+                            <p style="font-size: 1rem;">Interface</p>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 180px;">
+                            <strong>Python Script</strong>
+                            <p style="font-size: 1rem;">Lógica</p>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 180px;">
+                            <strong>Modelo .h5</strong>
+                            <p style="font-size: 1rem;">IA Local</p>
+                        </div>
+                        <span class="flow-arrow">→</span>
+                        
+                        <div class="card" style="min-width: 180px;">
+                            <strong>Resultado</strong>
+                            <p style="font-size: 1rem;">Tela</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Vantagens da Arquitetura Standalone:</h3>
+                <ul>
+                    <li><span class="highlight">Privacidade Total</span> - Imagens médicas nunca saem do computador</li>
+                    <li><span class="highlight">Sem Latência de Rede</span> - Processamento instantâneo local</li>
+                    <li><span class="highlight">Sem Servidor</span> - Não precisa manter infraestrutura online</li>
+                    <li><span class="highlight">Offline First</span> - Funciona sem conexão à internet</li>
+                    <li><span class="highlight">Custo Zero de Hospedagem</span> - Não paga servidor/cloud</li>
+                    <li><span class="highlight">Dados Sensíveis Protegidos</span> - LGPD/HIPAA compliance</li>
+                </ul>
+
+                <h3 style="margin-top: 30px;">Comparação: Com vs Sem Backend</h3>
+                <div class="grid-2">
+                    <div class="card" style="border: 2px solid #ff4757;">
+                        <h4 style="color: #ff4757;">❌ Com Backend (Web)</h4>
+                        <ul style="font-size: 1rem;">
+                            <li>Frontend (React/Vue)</li>
+                            <li>API REST (Flask/FastAPI)</li>
+                            <li>Servidor para hospedar</li>
+                            <li>Upload de imagens via HTTP</li>
+                            <li>Latência de rede</li>
+                            <li>Custos de infraestrutura</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card" style="border: 2px solid #00ff88;">
+                        <h4 style="color: #00ff88;">✅ Sem Backend (Desktop)</h4>
+                        <ul style="font-size: 1rem;">
+                            <li>Tkinter GUI integrada</li>
+                            <li>Python processa localmente</li>
+                            <li>Roda no PC do usuário</li>
+                            <li>Imagens locais direto</li>
+                            <li>Processamento imediato</li>
+                            <li>Zero custos externos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="code-block" style="margin-top: 20px;">
+# Tudo em UM único processo Python:<br>
+<br>
+import tkinter as tk              # Interface gráfica<br>
+from tensorflow.keras.models import load_model  # IA<br>
+import cv2                        # Processamento<br>
+<br>
+model = load_model('modelo.h5')  # Carrega local<br>
+img = cv2.imread('imagem.jpg')   # Lê local<br>
+result = model.predict(img)      # Processa local<br>
+# Exibe na GUI Tkinter local ✅
+                </div>
+
+                <div class="warning-box" style="margin-top: 20px;">
+                    <p><strong>📌 Quando PRECISARIA de Backend:</strong></p>
+                    <ul style="font-size: 1.1rem;">
+                        <li>Acesso via navegador web (HTML/JavaScript)</li>
+                        <li>Múltiplos usuários simultâneos em rede</li>
+                        <li>App mobile (iOS/Android) com API</li>
+                        <li>Histórico centralizado de diagnósticos</li>
+                        <li>Modelo muito pesado (GPU remota)</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Mas nosso caso:</strong> Desktop standalone = <span class="highlight">Backend desnecessário!</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17: Conclusão -->
+        <div class="slide">
+            <div class="slide-content" style="text-align: center;">
+                <div class="logo">🧠</div>
+                <h1>NeuroAI</h1>
+                <h2 style="color: #00d4ff;">Sistema Completo de Diagnóstico Cerebral</h2>
+                
+                <div class="success-box" style="margin: 40px 0; text-align: left;">
+                    <h3 style="color: #00ff88;">✅ O que Entregamos:</h3>
+                    <ul style="font-size: 1.2rem;">
+                        <li>Sistema desktop funcional com interface moderna</li>
+                        <li>Modelo CNN treinado com dataset real do Kaggle</li>
+                        <li>Containerização completa com Docker</li>
+                        <li>Pipeline CI/CD automatizado com GitHub Actions</li>
+                        <li>Código modular, documentado e versionado</li>
+                        <li>Pronto para uso em ambiente médico</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 30px;">Tecnologias Dominadas:</h3>
+                <div style="margin-top: 20px;">
+                    <span class="tech-badge">Deep Learning</span>
+                    <span class="tech-badge">CNN</span>
+                    <span class="tech-badge">TensorFlow</span>
+                    <span class="tech-badge">Docker</span>
+                    <span class="tech-badge">CI/CD</span>
+                    <span class="tech-badge">Git/GitHub</span>
+                    <span class="tech-badge">Python</span>
+                </div>
+
+                <p style="font-size: 1.5rem; margin-top: 50px; color: #b3bcc8;">
+                    <strong>Obrigado pela atenção!</strong><br>
+                    github.com/MisterHyndra/NeuroAi
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegação -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">◀ Anterior</button>
+        <button class="nav-btn" onclick="nextSlide()">Próximo ▶</button>
+    </div>
+
+    <!-- Contador de Slides -->
+    <div class="slide-counter">
+        <span id="current-slide">1</span> / <span id="total-slides">21</span>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Atualizar contador total
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(index) {
+            // Remover active de todos
+            slides.forEach(slide => slide.classList.remove('active'));
+            
+            // Garantir que o índice está dentro dos limites
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            } else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            } else {
+                currentSlide = index;
+            }
+            
+            // Adicionar active ao slide atual
+            slides[currentSlide].classList.add('active');
+            
+            // Atualizar contador
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'Home') {
+                showSlide(0);
+            } else if (e.key === 'End') {
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // Swipe para mobile (opcional)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchStartX - touchEndX > 50) {
+                nextSlide();
+            }
+            if (touchEndX - touchStartX > 50) {
+                previousSlide();
+            }
+        }
+    </script>
+</body>
+</html>

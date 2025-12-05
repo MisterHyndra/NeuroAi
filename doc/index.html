@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroAI - Documentação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .logo {
+            font-size: 5rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #00d4ff;
+            margin-bottom: 50px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .doc-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .doc-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .doc-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ff88;
+        }
+
+        .doc-desc {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #e0e0e0;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .info-section h2 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .info-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1rem;
+            color: #b3bcc8;
+        }
+
+        .github-link {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-top: 20px;
+            border: 2px solid #00d4ff;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .github-link:hover {
+            background: rgba(0, 212, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding: 8px 0;
+            font-size: 1.1rem;
+        }
+
+        ul li::before {
+            content: "▸ ";
+            color: #00ff88;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🧠</div>
+        <h1>NeuroAI</h1>
+        <div class="subtitle">Centro de Documentação</div>
+
+        <div class="card-grid">
+            <a href="apresentacao.html" class="doc-card">
+                <div class="doc-icon">🎬</div>
+                <div class="doc-title">Apresentação</div>
+                <div class="doc-desc">Slides interativos explicando todo o projeto (16 slides)</div>
+            </a>
+
+            <a href="../README.md" class="doc-card">
+                <div class="doc-icon">📖</div>
+                <div class="doc-title">README</div>
+                <div class="doc-desc">Documentação principal do projeto e instruções de uso</div>
+            </a>
+
+            <a href="../GITHUB_ACTIONS_GUIDE.md" class="doc-card">
+                <div class="doc-icon">🚀</div>
+                <div class="doc-title">Guia CI/CD</div>
+                <div class="doc-desc">Tutorial completo de GitHub Actions e pipeline</div>
+            </a>
+        </div>
+
+        <div class="info-section">
+            <h2>📚 Sobre a Documentação</h2>
+            <p>
+                Este centro de documentação contém todos os materiais necessários para entender,
+                usar e apresentar o projeto NeuroAI - Sistema de Diagnóstico Cerebral com IA.
+            </p>
+            
+            <h2 style="margin-top: 30px;">🎯 Conteúdo Disponível</h2>
+            <ul>
+                <li><strong>Apresentação em Slides:</strong> Material visual profissional para apresentações</li>
+                <li><strong>README Técnico:</strong> Instruções de instalação e uso do sistema</li>
+                <li><strong>Guia CI/CD:</strong> Configuração de pipeline de integração contínua</li>
+            </ul>
+
+            <h2 style="margin-top: 30px;">💡 Como Usar</h2>
+            <ul>
+                <li>Clique nos cards acima para acessar cada documento</li>
+                <li>Use a apresentação para defesa do projeto</li>
+                <li>Consulte o README para setup técnico</li>
+                <li>Siga o guia CI/CD para automação</li>
+            </ul>
+        </div>
+
+        <div class="info-section" style="background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88;">
+            <h2>✨ Destaques do Projeto</h2>
+            <ul>
+                <li>Interface Desktop moderna com Tkinter</li>
+                <li>Modelo CNN treinado com dataset real do Kaggle</li>
+                <li>Containerização completa com Docker</li>
+                <li>Pipeline CI/CD automatizado</li>
+                <li>Código modular e bem documentado</li>
+                <li>Pronto para ambiente de produção</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p><strong>Desenvolvido por:</strong> MisterHyndra</p>
+            <p><strong>Projeto:</strong> NeuroAI - Sistema de Diagnóstico Cerebral</p>
+            <p><strong>Tecnologias:</strong> Python • TensorFlow • Docker • CI/CD</p>
+            
+            <a href="https://github.com/MisterHyndra/NeuroAi" class="github-link" target="_blank">
+                🔗 Ver no GitHub
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "neuroai-web",
+  "version": "1.0.0",
+  "description": "NeuroAI Web Dashboard with Authentication",
+  "main": "auth_server.js",
+  "scripts": {
+    "setup": "node setup_database.js",
+    "test-db": "node test_db.js",
+    "start": "node auth_server.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.3",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcrypt": "^5.1.1"
+  },
+  "devDependencies": {},
+  "keywords": ["neuroai", "medical", "diagnosis", "postgresql"],
+  "author": "NeuroAI Team",
+  "license": "MIT"
+}

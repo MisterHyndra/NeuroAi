@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroAI - Sistema de Diagnóstico Cerebral</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+    <script src="modal.js"></script>
+    <script src="theme.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.75rem;">
+                🧠
+            </div>
+            <div>
+                <h1>NeuroAI Diagnostics</h1>
+                <p>Sistema Inteligente de Diagnóstico Cerebral • Powered by AI</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()" title="Ativar modo escuro">🌙</button>
+            <div class="status">
+                <span id="modelStatus">Carregando modelo...</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Painel de Controle (Esquerda) -->
+        <aside class="control-panel">
+            <section class="upload-section">
+                <h2>📁 Carregar Imagem</h2>
+                <div class="upload-area" id="uploadArea">
+                    <p>Arraste a imagem aqui<br>ou clique para selecionar</p>
+                    <input type="file" id="imageInput" accept="image/*" hidden>
+                </div>
+                <button id="selectButton" class="btn btn-primary">
+                    🖼️ Selecionar Imagem
+                </button>
+                <div id="imagePreview"></div>
+            </section>
+
+            <section class="analysis-section">
+                <h2>🧠 Análise por IA</h2>
+                <button id="analyzeButton" class="btn btn-success" disabled>
+                    🚀 Iniciar Diagnóstico
+                </button>
+                <div class="threshold-control">
+                    <label>Limiar de decisão (grade para tumor):</label>
+                    <input type="range" id="thresholdSlider" min="0" max="100" value="35">
+                    <span id="thresholdValue">0.35</span>
+                </div>
+            </section>
+
+            <section class="info-section">
+                <h2>ℹ️ Informações</h2>
+                <p>• Modelo: Balanceado (sem viés)</p>
+                <p id="modelInfo">• Arquitetura: Carregando...</p>
+            </section>
+        </aside>
+
+        <!-- Visualização Central -->
+        <main class="visualization-panel">
+            <div class="tabs">
+                <button class="tab active" data-tab="original">Imagem Original</button>
+                <button class="tab" data-tab="analysis">Análise Quantitativa</button>
+                <button class="tab" data-tab="activation">Mapa de Ativação</button>
+            </div>
+
+            <div class="tab-content active" id="originalTab">
+                <div class="image-display">
+                    <canvas id="originalCanvas"></canvas>
+                    <p>Aguardando imagem...</p>
+                </div>
+            </div>
+
+            <div class="tab-content" id="analysisTab">
+                <h3>NeuroAI - Análise Quantitativa do Diagnóstico</h3>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h4>Classificação Principal</h4>
+                        <canvas id="classificationChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4 id="confidenceTitle">Nível de Confiança: --</h4>
+                        <canvas id="confidenceChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Distribuição de Probabilidade</h4>
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Escala de Risco</h4>
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="activationTab">
+                <div class="image-display">
+                    <canvas id="activationCanvas"></canvas>
+                    <p>Execute a análise para ver o mapa de ativação</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Painel de Resultados (Direita) -->
+        <aside class="results-panel">
+            <section class="instant-result">
+                <h2>⚡ Resultado</h2>
+                <div id="resultDisplay" class="result-waiting">
+                    <div class="icon-placeholder">
+                        <svg width="64" height="64" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#d1d5db" stroke-width="2"/>
+                            <text x="50" y="60" font-size="40" text-anchor="middle" fill="#9ca3af" font-weight="bold">?</text>
+                        </svg>
+                    </div>
+                    <p style="color: #6b7280; font-size: 0.9rem;">Aguardando análise</p>
+                </div>
+            </section>
+
+            <section class="report-section">
+                <h2>📋 Relatório</h2>
+                <button id="generateReport" class="btn btn-secondary" disabled>
+                    Gerar Relatório
+                </button>
+                <div id="reportContent" class="report-content">
+                    <p><strong>📊 INFORMAÇÕES DA ANÁLISE</strong></p>
+                    <p id="reportDetails">Nenhuma análise realizada ainda.</p>
+                    <hr>
+                    <p><strong>🔬 RESULTADO PRINCIPAL</strong></p>
+                    <p id="reportResult">Aguardando diagnóstico...</p>
+                    <hr>
+                    <p><strong>💡 INTERPRETAÇÃO CLÍNICA</strong></p>
+                    <p id="reportInterpretation">Execute a análise primeiro.</p>
+                    <hr>
+                    <p><strong>⚕️ PRÓXIMAS ETAPAS</strong></p>
+                    <p>• Consulte um neurologista<br>• Realize exames complementares<br>• Mantenha acompanhamento</p>
+                </div>
+            </section>
+        </aside>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
