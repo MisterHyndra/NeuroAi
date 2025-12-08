@@ -78,11 +78,11 @@ export default function LoginPage() {
 
           <p className="text-center text-sm text-muted-foreground mt-8">
             Ao fazer login, você concorda com nossos{" "}
-            <a href="#" className="text-primary hover:underline">
+            <a href="/terms" className="text-primary hover:underline font-medium transition-colors">
               Termos de Serviço
             </a>{" "}
             e{" "}
-            <a href="#" className="text-primary hover:underline">
+            <a href="/privacy" className="text-primary hover:underline font-medium transition-colors">
               Política de Privacidade
             </a>
           </p>

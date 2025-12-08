@@ -325,7 +325,13 @@ export function ImageAnalysisDashboardIntegrated() {
 
           {/* Analysis Steps */}
           {(isAnalyzing || analysisComplete) && (
-            <AnalysisSteps currentStep={currentStep} isAnalyzing={isAnalyzing} selectedImage={selectedImage} />
+            <AnalysisSteps 
+              currentStep={currentStep} 
+              isAnalyzing={isAnalyzing} 
+              selectedImage={selectedImage}
+              analysisResults={analysisResults}
+              threshold={threshold}
+            />
           )}
 
           {/* Results */}

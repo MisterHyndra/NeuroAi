@@ -9,6 +9,12 @@ interface AnalysisStepsProps {
   currentStep: number
   isAnalyzing: boolean
   selectedImage: string | null
+  analysisResults?: {
+    normal: number
+    tumor: number
+    confidence: number
+  }
+  threshold?: number
 }
 
 const steps = [
@@ -17,7 +23,44 @@ const steps = [
   { id: 3, name: "Mapa de Ativação", description: "Identificação de regiões" },
 ]
 
-export function AnalysisSteps({ currentStep, isAnalyzing, selectedImage }: AnalysisStepsProps) {
+export function AnalysisSteps({ currentStep, isAnalyzing, selectedImage, analysisResults, threshold = 0.35 }: AnalysisStepsProps) {
+  // Determinar se há tumor baseado na análise real
+  const isTumor = analysisResults && (analysisResults.tumor > threshold)
+  
+  // Gerar SVG overlay para a área suspeita
+  const generateHeatmapOverlay = () => {
+    if (!isTumor || !analysisResults) return null
+
+    const confidence = analysisResults.tumor
+    
+    // Criar múltiplos focos baseado na confiança
+    const foci = []
+    
+    // Foco principal (região central-superior)
+    foci.push({
+      cx: 50,
+      cy: 35,
+      r: 20,
+      opacity: confidence * 0.8,
+      intensity: confidence
+    })
+    
+    // Foco secundário se confiança muito alta
+    if (confidence > 0.75) {
+      foci.push({
+        cx: 65,
+        cy: 55,
+        r: 12,
+        opacity: confidence * 0.5,
+        intensity: confidence * 0.6
+      })
+    }
+    
+    return foci
+  }
+  
+  const heatmapFoci = generateHeatmapOverlay()
+  
   return (
     <Card>
       <CardHeader>
@@ -103,12 +146,16 @@ export function AnalysisSteps({ currentStep, isAnalyzing, selectedImage }: Analy
                   />
                   <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-primary/20" />
                   <div className="absolute top-4 left-4 bg-card/90 backdrop-blur p-3 rounded-lg border border-border">
-                    <div className="text-xs text-muted-foreground">Densidade Média</div>
-                    <div className="text-lg font-bold text-foreground">42.3 HU</div>
+                    <div className="text-xs text-muted-foreground">Probabilidade Normal</div>
+                    <div className="text-lg font-bold text-foreground">
+                      {analysisResults ? `${(analysisResults.normal * 100).toFixed(1)}%` : "—"}
+                    </div>
                   </div>
                   <div className="absolute top-4 right-4 bg-card/90 backdrop-blur p-3 rounded-lg border border-border">
-                    <div className="text-xs text-muted-foreground">Área Analisada</div>
-                    <div className="text-lg font-bold text-foreground">1,234 mm²</div>
+                    <div className="text-xs text-muted-foreground">Probabilidade Tumor</div>
+                    <div className="text-lg font-bold text-foreground">
+                      {analysisResults ? `${(analysisResults.tumor * 100).toFixed(1)}%` : "—"}
+                    </div>
                   </div>
                 </>
               ) : (
@@ -118,26 +165,93 @@ export function AnalysisSteps({ currentStep, isAnalyzing, selectedImage }: Analy
           </TabsContent>
 
           <TabsContent value="step-3" className="mt-4">
-            <div className="bg-muted rounded-lg overflow-hidden border border-border relative">
-              {selectedImage ? (
+            <div className="bg-muted rounded-lg overflow-hidden border border-border relative h-80">
+              {selectedImage && analysisResults ? (
                 <>
                   <img
                     src={selectedImage || "/placeholder.svg"}
                     alt="Activation map"
-                    className="w-full h-auto object-contain max-h-80 opacity-60"
+                    className="w-full h-full object-contain"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-br from-destructive/30 via-transparent to-transparent">
-                    <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-destructive/40 rounded-full blur-xl animate-pulse" />
-                  </div>
+                  
+                  {/* SVG Overlay com heatmap */}
+                  <svg
+                    className="absolute inset-0 w-full h-full"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <defs>
+                      {heatmapFoci?.map((focus, idx) => (
+                        <radialGradient
+                          key={`grad-${idx}`}
+                          id={`heatmap-gradient-${idx}`}
+                          cx="50%"
+                          cy="50%"
+                          r="50%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor={isTumor ? "#ff4444" : "#00ff00"}
+                            stopOpacity={focus.intensity}
+                          />
+                          <stop
+                            offset="70%"
+                            stopColor={isTumor ? "#ff8800" : "#00dd00"}
+                            stopOpacity={focus.intensity * 0.5}
+                          />
+                          <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+                        </radialGradient>
+                      ))}
+                    </defs>
+
+                    {/* Renderizar focos */}
+                    {heatmapFoci?.map((focus, idx) => (
+                      <g key={`foci-${idx}`}>
+                        <circle
+                          cx={`${focus.cx}%`}
+                          cy={`${focus.cy}%`}
+                          r={`${focus.r}%`}
+                          fill={`url(#heatmap-gradient-${idx})`}
+                          className={isTumor ? "animate-pulse" : ""}
+                        />
+                        {/* Borda do foco */}
+                        <circle
+                          cx={`${focus.cx}%`}
+                          cy={`${focus.cy}%`}
+                          r={`${focus.r}%`}
+                          fill="none"
+                          stroke={isTumor ? "#ff6666" : "#00ff00"}
+                          strokeWidth="0.5"
+                          opacity={focus.opacity * 0.6}
+                          className="animate-pulse"
+                        />
+                      </g>
+                    ))}
+                  </svg>
+
+                  {/* Legenda */}
                   <div className="absolute bottom-4 left-4 right-4 bg-card/90 backdrop-blur p-3 rounded-lg border border-border">
                     <div className="flex items-center justify-between">
-                      <div className="text-sm font-medium text-foreground">Região de interesse identificada</div>
-                      <div className="text-xs text-destructive font-semibold">Atenção requerida</div>
+                      <div className="text-sm font-medium text-foreground">
+                        {isTumor
+                          ? "Região de interesse identificada"
+                          : "Sem achados relevantes detectados"}
+                      </div>
+                      <div
+                        className={cn(
+                          "text-xs font-semibold",
+                          isTumor ? "text-destructive" : "text-accent"
+                        )}
+                      >
+                        {isTumor ? "Atenção requerida" : "Normal"}
+                      </div>
                     </div>
                   </div>
                 </>
               ) : (
-                <div className="h-80 flex items-center justify-center text-muted-foreground">Aguardando análise...</div>
+                <div className="h-full flex items-center justify-center text-muted-foreground">
+                  Aguardando análise...
+                </div>
               )}
             </div>
           </TabsContent>
