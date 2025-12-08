@@ -44,14 +44,50 @@ export function ImageAnalysisDashboardIntegrated() {
   // Carregar estatísticas
   const loadStats = async () => {
     try {
-      // Aqui você pode buscar dados reais da API
+      const token = localStorage.getItem('neuroai_token')
+      
+      // Buscar histórico da API
+      const response = await fetch(`${API_URL}/history`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!response.ok) throw new Error('Erro ao carregar histórico')
+
+      const data = await response.json()
+      const history = data.history || []
+
+      // Calcular análises de hoje
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      const todayAnalyses = history.filter((item: any) => {
+        const itemDate = new Date(item.created_at)
+        itemDate.setHours(0, 0, 0, 0)
+        return itemDate.getTime() === today.getTime()
+      })
+
+      // Contar casos críticos (tumor confirmado)
+      const criticalCases = history.filter((item: any) => {
+        return item.prediction_tumor > item.prediction_normal
+      })
+
       setStats({
-        today: 24,
+        today: todayAnalyses.length,
         accuracy: 98.3,
-        critical: 3
+        critical: criticalCases.length
       })
     } catch (err) {
       console.error('Erro ao carregar estatísticas:', err)
+      // Manter valores padrão em caso de erro
+      setStats({
+        today: 0,
+        accuracy: 98.3,
+        critical: 0
+      })
     }
   }
 
@@ -158,6 +194,8 @@ export function ImageAnalysisDashboardIntegrated() {
       } else {
         const data = await response.json()
         console.log('Análise salva com sucesso:', data)
+        // Recarregar estatísticas após salvar
+        await loadStats()
       }
     } catch (err) {
       console.error('Erro ao salvar no histórico:', err)

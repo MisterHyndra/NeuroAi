@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   // <CHANGE> Updated metadata for NeuroAI Diagnostics
   title: "NeuroAI Diagnostics - Sistema Inteligente de Diagnóstico",
   description: "Plataforma avançada de detecção de câncer utilizando inteligência artificial",
-  generator: "v0.app",
+  generator: "Neuro-AI Diagnostics",
   icons: {
     icon: [
       {
